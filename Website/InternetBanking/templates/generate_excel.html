@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<title>Internet Banking</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+
+  <!-- Fengyuan Chen's Datepicker -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/datepicker/0.6.5/datepicker.min.css" integrity="sha256-b88RdwbRJEzRx95nCuuva+hO5ExvXXnpX+78h8DjyOE=" crossorigin="anonymous" />
+
+<style>
+body {font-family: "Times New Roman", Georgia, Serif;}
+h1, h2, h3, h4, h5, h6 {
+  font-family: "Playfair Display";
+  letter-spacing: 5px;
+}
+</style>
+<body>
+
+<!-- Navbar (sit on top) -->
+<div class="w3-top">
+  <div class="w3-bar w3-white w3-padding w3-card" style="letter-spacing:4px;">
+    <a href="#home" class="w3-bar-item w3-button">My Bank</a>
+    <!-- Right-sided navbar links. Hide them on small screens -->
+    <div class="w3-right w3-hide-small">
+      <a href="{% url 'user_view' %}" class="w3-bar-item w3-button">Users</a>
+      <a href="" class="w3-bar-item w3-button">Accounts</a>
+      <a href="{% url 'select_range' %}" class="w3-bar-item w3-button">Download Excel</a>
+      <a href="" class="w3-bar-item w3-button">Action</a>
+    </div>
+  </div>
+</div>
+
+<!-- Header -->
+<header class="w3-display-container w3-content w3-wide" style="max-width:1600px;min-width:500px" id="home">
+  <img class="w3-image" src="/w3images/hamburger.jpg" alt="Hamburger Catering" width="1600" height="800">
+  <div class="w3-display-bottomleft w3-padding-large w3-opacity">
+    <h1 class="w3-xxlarge"></h1>
+  </div>
+</header>
+
+<!-- Page content -->
+<div class="w3-content" style="max-width:1100px">
+
+  <!-- About Section -->
+  <div class="w3-row w3-padding-64" id="about">
+    <form method="">
+      <div class="form-group">
+          <label>Select Start Date</label>
+          <input id="datepicker">
+      </div>
+      <div class="form-group">
+          <label>Select End Date</label>
+          <input id="datepicker1">
+      </div>
+      <div class="form-group">
+          <label>Select Account No.</label>
+          <select id="select_account">
+            {% for x in ac %}
+            <option value="{{x.id}}">{{x.id}} </option>
+            {% endfor %}
+          </select>
+      </div>
+      <div class="form-actions">
+              <button type="submit" id='excel' name="excel" class="btn blue">Download Excel</button>
+          </div>
+    </form>
+
+  </div>
+</div>
+<script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/datepicker/0.6.5/datepicker.min.js" integrity="sha256-/7FLTdzP6CfC1VBAj/rsp3Rinuuu9leMRGd354hvk0k=" crossorigin="anonymous"></script>
+<script type='text/javascript'>
+        $(function () {
+          $("#datepicker").datepicker({
+            format:'yyyy-mm-dd',
+          });
+          $("#datepicker1").datepicker({
+            format:'yyyy-mm-dd',
+          });
+        });
+        $(document).ready(function(){
+          $("#excel").click(function(){
+              start_date = $("#datepicker").val();
+              end_date = $("#datepicker1").val();
+              account_id = $("#select_account").find('option:selected').val();
+              $.ajax({
+                url:'http://127.0.0.1:8000/export/excel/',
+                type:'GET',
+                data:{start_date:start_date,end_date:end_date,account_id:account_id},
+                success:function(data,response){
+                    window.location.href='http://127.0.0.1:8000/export/excel/'
+                }
+            });
+          });
+        });
+</script>
+
